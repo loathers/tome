@@ -5,9 +5,10 @@
 		"noEmit": true,
 		"allowUnreachableCode": false,
 		"allowUnusedLabels": false,
+		"allowSyntheticDefaultImports": true,
 		"declaration": false,
 		"forceConsistentCasingInFileNames": true,
-		"lib": ["es2020"],
+		"lib": ["es2020", "dom", "dom.iterable"],
 		"module": "commonjs",
 		"noEmitOnError": true,
 		"noFallthroughCasesInSwitch": true,
@@ -15,9 +16,14 @@
 		"pretty": true,
 		"strict": true,
 		"target": "es2018",
-		"skipLibCheck": true
+		"jsx": "react-jsx",
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"paths": {
+			"kolmafia": ["./src/kolmafia"]
+		}
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": [
 		"node_modules",
 		"typings/main",
