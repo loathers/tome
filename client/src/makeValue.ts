@@ -1,119 +1,119 @@
-import * as types from "./kolmafia/types";
+import * as types from './kolmafia/types'
 
 export const placeholderTypes = {
-  Bounty: "bounties",
-  Class: "classes",
-  Coinmaster: "coinmasters",
-  Effect: "effects",
-  Element: "elements",
-  Familiar: "familiars",
-  Item: "items",
-  Location: "locations",
-  Monster: "monsters",
-  Phylum: "phyla",
-  Servant: "servants",
-  Skill: "skills",
-  Slot: "slot",
-  Stat: "stat",
-  Thrall: "thralls",
-  Vykea: "vykea",
-} as const;
+	Bounty: 'bounties',
+	Class: 'classes',
+	Coinmaster: 'coinmasters',
+	Effect: 'effects',
+	Element: 'elements',
+	Familiar: 'familiars',
+	Item: 'items',
+	Location: 'locations',
+	Monster: 'monsters',
+	Phylum: 'phyla',
+	Servant: 'servants',
+	Skill: 'skills',
+	Slot: 'slot',
+	Stat: 'stat',
+	Thrall: 'thralls',
+	Vykea: 'vykea',
+} as const
 
-export type PlaceholderTypes = keyof typeof placeholderTypes;
+export type PlaceholderTypes = keyof typeof placeholderTypes
 
 export type Placeholder<T extends PlaceholderTypes> =
-  | {
-      objectType: T;
-      identifierString: string;
-    }
-  | {
-      objectType: T;
-      identifierNumber: number;
-    };
+	| {
+			objectType: T
+			identifierString: string
+	  }
+	| {
+			objectType: T
+			identifierNumber: number
+	  }
 
 export function makePlaceholder<T extends PlaceholderTypes>(
-  objectType: T,
-  identifier: string | number
+	objectType: T,
+	identifier: string | number
 ): Placeholder<T> {
-  return {
-    objectType,
-    [typeof identifier === "number" ? "identifierNumber" : "identifierString"]:
-      identifier,
-  } as Placeholder<T>;
+	return {
+		objectType,
+		[typeof identifier === 'number' ? 'identifierNumber' : 'identifierString']:
+			identifier,
+	} as Placeholder<T>
 }
 
 export function placeholderIdentifier<T extends PlaceholderTypes>(
-  placeholder: Placeholder<T>
+	placeholder: Placeholder<T>
 ): string | number {
-  return "identifierString" in placeholder
-    ? placeholder.identifierString
-    : placeholder.identifierNumber;
+	return 'identifierString' in placeholder
+		? placeholder.identifierString
+		: placeholder.identifierNumber
 }
 
-export type Full<T extends PlaceholderTypes> = T extends "Bounty"
-  ? types.Bounty
-  : T extends "Class"
-  ? types.Class
-  : T extends "Coinmaster"
-  ? types.Coinmaster
-  : T extends "Effect"
-  ? types.Effect
-  : T extends "Element"
-  ? types.Element
-  : T extends "Familiar"
-  ? types.Familiar
-  : T extends "Item"
-  ? types.Item
-  : T extends "Location"
-  ? types.Location
-  : T extends "Monster"
-  ? types.Monster
-  : T extends "Phylum"
-  ? types.Phylum
-  : T extends "Servant"
-  ? types.Servant
-  : T extends "Skill"
-  ? types.Skill
-  : T extends "Slot"
-  ? types.Slot
-  : T extends "Stat"
-  ? types.Stat
-  : T extends "Thrall"
-  ? types.Thrall
-  : T extends "Vykea"
-  ? types.Vykea
-  : never;
+export type Full<T extends PlaceholderTypes> = T extends 'Bounty'
+	? types.Bounty
+	: T extends 'Class'
+	? types.Class
+	: T extends 'Coinmaster'
+	? types.Coinmaster
+	: T extends 'Effect'
+	? types.Effect
+	: T extends 'Element'
+	? types.Element
+	: T extends 'Familiar'
+	? types.Familiar
+	: T extends 'Item'
+	? types.Item
+	: T extends 'Location'
+	? types.Location
+	: T extends 'Monster'
+	? types.Monster
+	: T extends 'Phylum'
+	? types.Phylum
+	: T extends 'Servant'
+	? types.Servant
+	: T extends 'Skill'
+	? types.Skill
+	: T extends 'Slot'
+	? types.Slot
+	: T extends 'Stat'
+	? types.Stat
+	: T extends 'Thrall'
+	? types.Thrall
+	: T extends 'Vykea'
+	? types.Vykea
+	: never
 
 const concatTemplateString = (
-  literals: TemplateStringsArray,
-  ...placeholders: string[]
+	literals: TemplateStringsArray,
+	...placeholders: string[]
 ) =>
-  literals.reduce(
-    (acc, literal, i) => acc + literal + (placeholders[i] || ""),
-    ""
-  );
+	literals.reduce(
+		(acc, literal, i) => acc + literal + (placeholders[i] || ''),
+		''
+	)
 
 function createSingleConstant<T extends PlaceholderTypes>(name: T) {
-  return (
-    literals: TemplateStringsArray,
-    ...placeholders: string[]
-  ): Placeholder<T> => {
-    const input = concatTemplateString(literals, ...placeholders);
-    return makePlaceholder(name, input);
-  };
+	return (
+		literals: TemplateStringsArray,
+		...placeholders: string[]
+	): Placeholder<T> => {
+		const input = concatTemplateString(literals, ...placeholders)
+		return makePlaceholder(name, input)
+	}
 }
 
 function createPluralConstant<T extends PlaceholderTypes>(name: T) {
-  return (
-    literals: TemplateStringsArray,
-    ...placeholders: string[]
-  ): Placeholder<T>[] => {
-    const input = concatTemplateString(literals, ...placeholders);
+	return (
+		literals: TemplateStringsArray,
+		...placeholders: string[]
+	): Placeholder<T>[] => {
+		const input = concatTemplateString(literals, ...placeholders)
 
-    return input
-      .split(/\s*(?<!\\),\s*/)
-      .map((identifier) => makePlaceholder(name, identifier));
-  };
+		return input
+			.split(/\s*(?<!\\),\s*/)
+			.map((identifier) => makePlaceholder(name, identifier))
+	}
 }
 
 /**
@@ -121,7 +121,7 @@ function createPluralConstant<T extends PlaceholderTypes>(name: T) {
  *
  * @category In-game constant
  */
-export const $bounty = createSingleConstant("Bounty");
+export const $bounty = createSingleConstant('Bounty')
 
 /**
  * A list of Bounties specified by a comma-separated list of names.
@@ -129,14 +129,14 @@ export const $bounty = createSingleConstant("Bounty");
  *
  * @category In-game constant
  */
-export const $bounties = createPluralConstant("Bounty");
+export const $bounties = createPluralConstant('Bounty')
 
 /**
  * A Class specified by name.
  *
  * @category In-game constant
  */
-export const $class = createSingleConstant("Class");
+export const $class = createSingleConstant('Class')
 
 /**
  * A list of Classes specified by a comma-separated list of names.
@@ -144,14 +144,14 @@ export const $class = createSingleConstant("Class");
  *
  * @category In-game constant
  */
-export const $classes = createPluralConstant("Class");
+export const $classes = createPluralConstant('Class')
 
 /**
  * A Coinmaster specified by name.
  *
  * @category In-game constant
  */
-export const $coinmaster = createSingleConstant("Coinmaster");
+export const $coinmaster = createSingleConstant('Coinmaster')
 
 /**
  * A list of Coinmasters specified by a comma-separated list of names.
@@ -159,14 +159,14 @@ export const $coinmaster = createSingleConstant("Coinmaster");
  *
  * @category In-game constant
  */
-export const $coinmasters = createPluralConstant("Coinmaster");
+export const $coinmasters = createPluralConstant('Coinmaster')
 
 /**
  * An Effect specified by name.
  *
  * @category In-game constant
  */
-export const $effect = createSingleConstant("Effect");
+export const $effect = createSingleConstant('Effect')
 
 /**
  * A list of Effects specified by a comma-separated list of names.
@@ -174,14 +174,14 @@ export const $effect = createSingleConstant("Effect");
  *
  * @category In-game constant
  */
-export const $effects = createPluralConstant("Effect");
+export const $effects = createPluralConstant('Effect')
 
 /**
  * An Element specified by name.
  *
  * @category In-game constant
  */
-export const $element = createSingleConstant("Element");
+export const $element = createSingleConstant('Element')
 
 /**
  * A list of Elements specified by a comma-separated list of names.
@@ -189,14 +189,14 @@ export const $element = createSingleConstant("Element");
  *
  * @category In-game constant
  */
-export const $elements = createPluralConstant("Element");
+export const $elements = createPluralConstant('Element')
 
 /**
  * A Familiar specified by name.
  *
  * @category In-game constant
  */
-export const $familiar = createSingleConstant("Familiar");
+export const $familiar = createSingleConstant('Familiar')
 
 /**
  * A list of Familiars specified by a comma-separated list of names.
@@ -204,14 +204,14 @@ export const $familiar = createSingleConstant("Familiar");
  *
  * @category In-game constant
  */
-export const $familiars = createPluralConstant("Familiar");
+export const $familiars = createPluralConstant('Familiar')
 
 /**
  * An Item specified by name.
  *
  * @category In-game constant
  */
-export const $item = createSingleConstant("Item");
+export const $item = createSingleConstant('Item')
 
 /**
  * A list of Items specified by a comma-separated list of names.
@@ -219,14 +219,14 @@ export const $item = createSingleConstant("Item");
  *
  * @category In-game constant
  */
-export const $items = createPluralConstant("Item");
+export const $items = createPluralConstant('Item')
 
 /**
  * A Location specified by name.
  *
  * @category In-game constant
  */
-export const $location = createSingleConstant("Location");
+export const $location = createSingleConstant('Location')
 
 /**
  * A list of Locations specified by a comma-separated list of names.
@@ -234,14 +234,14 @@ export const $location = createSingleConstant("Location");
  *
  * @category In-game constant
  */
-export const $locations = createPluralConstant("Location");
+export const $locations = createPluralConstant('Location')
 
 /**
  * A Monster specified by name.
  *
  * @category In-game constant
  */
-export const $monster = createSingleConstant("Monster");
+export const $monster = createSingleConstant('Monster')
 
 /**
  * A list of Monsters specified by a comma-separated list of names.
@@ -249,14 +249,14 @@ export const $monster = createSingleConstant("Monster");
  *
  * @category In-game constant
  */
-export const $monsters = createPluralConstant("Monster");
+export const $monsters = createPluralConstant('Monster')
 
 /**
  * A Phylum specified by name.
  *
  * @category In-game constant
  */
-export const $phylum = createSingleConstant("Phylum");
+export const $phylum = createSingleConstant('Phylum')
 
 /**
  * A list of Phyla specified by a comma-separated list of names.
@@ -264,14 +264,14 @@ export const $phylum = createSingleConstant("Phylum");
  *
  * @category In-game constant
  */
-export const $phyla = createPluralConstant("Phylum");
+export const $phyla = createPluralConstant('Phylum')
 
 /**
  * A Servant specified by name.
  *
  * @category In-game constant
  */
-export const $servant = createSingleConstant("Servant");
+export const $servant = createSingleConstant('Servant')
 
 /**
  * A list of Servants specified by a comma-separated list of names.
@@ -279,14 +279,14 @@ export const $servant = createSingleConstant("Servant");
  *
  * @category In-game constant
  */
-export const $servants = createPluralConstant("Servant");
+export const $servants = createPluralConstant('Servant')
 
 /**
  * A Skill specified by name.
  *
  * @category In-game constant
  */
-export const $skill = createSingleConstant("Skill");
+export const $skill = createSingleConstant('Skill')
 
 /**
  * A list of Skills specified by a comma-separated list of names.
@@ -294,14 +294,14 @@ export const $skill = createSingleConstant("Skill");
  *
  * @category In-game constant
  */
-export const $skills = createPluralConstant("Skill");
+export const $skills = createPluralConstant('Skill')
 
 /**
  * A Slot specified by name.
  *
  * @category In-game constant
  */
-export const $slot = createSingleConstant("Slot");
+export const $slot = createSingleConstant('Slot')
 
 /**
  * A list of Slots specified by a comma-separated list of names.
@@ -309,14 +309,14 @@ export const $slot = createSingleConstant("Slot");
  *
  * @category In-game constant
  */
-export const $slots = createPluralConstant("Slot");
+export const $slots = createPluralConstant('Slot')
 
 /**
  * A Stat specified by name.
  *
  * @category In-game constant
  */
-export const $stat = createSingleConstant("Stat");
+export const $stat = createSingleConstant('Stat')
 
 /**
  * A list of Stats specified by a comma-separated list of names.
@@ -324,14 +324,14 @@ export const $stat = createSingleConstant("Stat");
  *
  * @category In-game constant
  */
-export const $stats = createPluralConstant("Stat");
+export const $stats = createPluralConstant('Stat')
 
 /**
  * A Thrall specified by name.
  *
  * @category In-game constant
  */
-export const $thrall = createSingleConstant("Thrall");
+export const $thrall = createSingleConstant('Thrall')
 
 /**
  * A list of Thralls specified by a comma-separated list of names.
@@ -339,4 +339,4 @@ export const $thrall = createSingleConstant("Thrall");
  *
  * @category In-game constant
  */
-export const $thralls = createPluralConstant("Thrall");
+export const $thralls = createPluralConstant('Thrall')
