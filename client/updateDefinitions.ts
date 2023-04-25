@@ -112,7 +112,7 @@ async function generateFunctions(response: Promise<AxiosResponse<string, any>>) 
 
 	finalizeFunc()
 
-	fs.writeFileSync('./testfunctions.ts', out.join(''))
+	fs.writeFileSync('./src/kolmafia/functions.ts', out.join(''))
 }
 
 async function generateTypes(response: Promise<AxiosResponse<string, any>>) {
@@ -150,7 +150,7 @@ async function generateTypes(response: Promise<AxiosResponse<string, any>>) {
 	out.push(classNames.map((className) => `\t${className},\n`).join(''))
 	out.push('}\n')
 
-	fs.writeFileSync('./testtypes.ts', out.join(''))
+	fs.writeFileSync('./src/kolmafia/types.ts', out.join(''))
 }
 
 const data = getData()

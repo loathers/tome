@@ -8,7 +8,8 @@
 		"build:types": "tsc",
 		"build:js": "node build.mjs",
 		"lint": "eslint src && prettier --check .",
-		"lint:fix": "eslint src --fix && prettier --check --write ."
+		"lint:fix": "eslint src --fix && prettier --check --write .",
+		"updateDefinitions": "yarn run ts-node updateDefinitions.ts"
 	},
 	"eslintConfig": {
 		"extends": [
