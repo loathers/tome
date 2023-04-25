@@ -6,7 +6,7 @@ import {
 	isNumericProperty,
 	isStringProperty,
 	KnownProperty,
-} from './propertyTyping'
+} from 'libram'
 
 async function getPropertiesRaw(
 	properties: string[]

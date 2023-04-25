@@ -6,7 +6,8 @@ build({
 	minifySyntax: true,
 	platform: 'node',
 	target: 'rhino1.7.13',
-	external: ['kolmafia', 'setimmediate'],
+	external: ['setimmediate', 'tome-kolmafia-client'],
+	alias: { kolmafia: 'tome-kolmafia-client' },
 	plugins: [babel()],
 	define: {
 		'process.env.NODE_ENV': '"production"',

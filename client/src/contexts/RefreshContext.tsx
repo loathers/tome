@@ -55,16 +55,19 @@ async function getCharacterState() {
 type CharacterState = Awaited<ReturnType<typeof getCharacterState>>
 
 export const RefreshContextProvider: React.FC<{
+	charStateOverride?: () => Promise<Record<string, unknown>>
 	children: React.ReactNode
-}> = ({ children }) => {
-	const [lastCharacterState, setLastCharacterState] = useState<
-		Partial<CharacterState>
-	>({})
+}> = ({ charStateOverride, children }) => {
+	const [lastCharacterState, setLastCharacterState] = charStateOverride
+		? useState<Record<string, unknown>>({})
+		: useState<Partial<CharacterState>>({})
 	const [softRefreshCount, setSoftRefreshCount] = useState(0)
 	const [hardRefreshCount, setHardRefreshCount] = useState(0)
 
 	useInterval(async () => {
-		const characterState = await getCharacterState()
+		const characterState = charStateOverride
+			? await charStateOverride()
+			: await getCharacterState()
 
 		if (
 			!Object.entries(characterState).every(
