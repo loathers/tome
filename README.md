@@ -46,6 +46,14 @@ build({
 
 Hopefully someone who knows will fill this section in soon!
 
+## Advanced Usage
+
+The `RefreshContextProvider` that you wrap your app in can have its default refresh conditions
+overwritten via `charStateOverride`. This should be provided with a callback that returns a
+`Promise<Record<string, unknown>>`. Any time the values in the record change, data will be
+refreshed. The default behavior if no `charStateOverride` is provided is to refresh when your turn
+count, meat, hp, mp, familiar, or adventure count change.
+
 ## Developer Setup
 
 For testing actual development of tome itself, rather than setting up a script to utilize the
