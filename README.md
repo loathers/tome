@@ -19,7 +19,7 @@ For the time being you'll have to follow the developer setup instead of simply r
 tome-kolmafia-client`. That will be hooked up soon&trade;. Afterwards, you'll need to do some
 hackery with your build system to get tome-kolmafia-client treated as kolmafia. Afterwards you'll
 be able to import functions as if from kolmafia, and even use
-(libram)[https://github.com/loathers/libram] in the browser!
+[libram](https://github.com/loathers/libram) in the browser!
 
 After that, there's a little more work to be done before you can fully benefit, however. You'll need
 to wrap your App on some level (above wherever you want to run kolmafia functions) with a
