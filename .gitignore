@@ -1,4 +1,5 @@
 */build
 */node_modules
 /KoLmafia
-.DS_Store
+client/src/kolmafia/functions.ts
+client/src/kolmafia/types.ts

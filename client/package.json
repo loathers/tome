@@ -1,10 +1,11 @@
 {
 	"name": "tome-kolmafia-client",
-	"version": "0.0.9",
+	"version": "0.0.10",
 	"description": "A script for KoLMafia that allows the web portion of a relay script to access KoLMafia data.",
 	"main": "src/index.ts",
 	"scripts": {
-		"build": "yarn run build:types && yarn run build:js",
+		"build": "yarn run updateDefinitions && yarn run build:types && yarn run build:js",
+		"build:nogen": "yarn run build:types && yarn run build:js",
 		"build:types": "tsc",
 		"build:js": "node build.mjs",
 		"lint": "eslint src && prettier --check .",
