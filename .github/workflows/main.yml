@@ -46,7 +46,7 @@ jobs:
         with:
           node-version: ${{ env.node-version }}
       - name: Install modules
-        run: yarn install --immutable
+        run: yarn --cwd client install --immutable
       - name: Build
         run: yarn --cwd client run build
 
