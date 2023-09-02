@@ -89,13 +89,15 @@ async function generateFunctions(
 	function finalizeFunc() {
 		if (prevFuncName !== '' && results.length > 0) {
 			const def = reasonableDefault(results[0], typesWithPlaceholders)
+			const resultsStr = results
+				.map((result) => processType(result))
+				.join(' | ')
+			const isNever = resultsStr === 'never'
 			out.push(
-				`export function ${prevFuncName}(...args: unknown[]): ${results
-					.map((result) => processType(result))
-					.join(' | ')} {\n`
+				`export function ${prevFuncName}(...args: unknown[]): ${resultsStr} {\n`
 			)
 			out.push(
-				`\treturn remoteCall('${prevFuncName}', args${
+				`\t${isNever ? 'throw' : 'return'} remoteCall('${prevFuncName}', args${
 					def !== '' ? `, ${def}` : ''
 				})\n`
 			)
@@ -108,10 +110,6 @@ async function generateFunctions(
 		const funcName = funcMatch[1]
 		const params = funcMatch[2]
 		let result: string | Record<string, string> = processType(funcMatch[3])
-
-		if (result === 'never') {
-			continue
-		}
 
 		if (!result.match(/{ \[[^\]]+\]: [^\s]+ }/) && result.match(/{[^}]+}/)) {
 			const allMatches = result.matchAll(/ ([a-z_]+): ([^;]+);/g)
@@ -146,6 +144,11 @@ async function generateTypes(response: Promise<AxiosResponse<string, any>>) {
 	const beginning = fs.readFileSync('./partials/types.ts.txt')
 	const out: string[] = [beginning.toString()]
 
+	const typeMatches = data.matchAll(/^(?:export )?type \w+ = [^;]+;$/gm)
+	for (const typeMatch of typeMatches) {
+		out.push(`${typeMatch[0]}\n`)
+	}
+
 	const classNames: string[] = []
 	const classMatches = data.matchAll(
 		/export class ([^ ]+) extends MafiaClass {([^}]+)}(\n|$)/gm
@@ -159,6 +162,7 @@ async function generateTypes(response: Promise<AxiosResponse<string, any>>) {
 
 		out.push(`export class ${className} extends MafiaClass<'${className}'> {\n`)
 		out.push(`\tstatic readonly staticType = '${className}'\n`)
+		out.push(`\tstatic readonly none = ${className}.get('none')\n`)
 
 		const relevantMatches = body.matchAll(
 			/\/\*\*\s+\* ([^*]+) \*\/\n\s+readonly ([^:]+): ([^;]+);/gm

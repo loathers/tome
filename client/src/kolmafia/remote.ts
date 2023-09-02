@@ -9,9 +9,17 @@ import singletonize from './singletonize'
 const remoteFunctionsLoader = new DataLoader(batchFunction)
 
 // Map from JSON.stringify(args) to return value.
-const cachedValues = new Map<string, unknown>()
+let cachedValues: Map<string, unknown>
 const dirtyCachedValues = new Set<string>()
 let clearCount = 0
+
+// work around HOISTING AAAAAAAAAAAAAAAAAH
+function getCachedValues() {
+	if (cachedValues === undefined) {
+		cachedValues = new Map<string, unknown>()
+	}
+	return cachedValues
+}
 
 export function markRemoteCallCacheDirty(): void {
 	for (const key of Array.from(cachedValues.keys())) {
@@ -26,7 +34,7 @@ function fetchResult(name: string, args: unknown[]): void {
 	remoteFunctionsLoader.load({ name: name, args }).then((value) => {
 		const singletonized = singletonize(value)
 		const key = JSON.stringify([name, args])
-		cachedValues.set(key, singletonized)
+		getCachedValues().set(key, singletonized)
 
 		if (clearCount === initialClearCount) {
 			dirtyCachedValues.delete(key)
@@ -57,7 +65,7 @@ export function remoteCall<T>(
 		if (override !== null) return override as unknown as T
 	}
 
-	const cached = cachedValues.get(key)
+	const cached = getCachedValues().get(key)
 	if (cached === undefined || dirtyCachedValues.has(key)) {
 		setTimeout(() => fetchResult(name, args))
 	}

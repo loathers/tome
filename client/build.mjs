@@ -5,7 +5,7 @@ build({
 	bundle: true,
 	minifySyntax: true,
 	platform: 'node',
-	target: 'rhino1.7.13',
+	target: 'esnext',
 	external: ['setimmediate', 'tome-kolmafia-client'],
 	alias: { kolmafia: 'tome-kolmafia-client' },
 	plugins: [babel()],
