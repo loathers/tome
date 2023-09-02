@@ -72,7 +72,7 @@ jobs:
       - name: Run ESLint & Prettier
         run: yarn --cwd server run lint
 
-  testBuildClient:
+  testBuildServer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
