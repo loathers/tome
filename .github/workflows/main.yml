@@ -37,7 +37,7 @@ jobs:
 
   pushClient:
     runs-on: ubuntu-latest
-    needs: [lint, testBuild]
+    needs: [lintClient, testBuildClient]
     if: github.ref == 'refs/heads/main'
 
     steps:
@@ -86,7 +86,7 @@ jobs:
 
   pushServer:
     runs-on: ubuntu-latest
-    needs: [lint, testBuild]
+    needs: [lintServer, testBuildServer]
     if: github.ref == 'refs/heads/main'
 
     steps:
