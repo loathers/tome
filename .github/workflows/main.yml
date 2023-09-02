@@ -1,0 +1,110 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  node-version: "16"
+  path-client: "client/KoLmafia"
+  path-server: "server/KoLmafia"
+
+jobs:
+  lintClient:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn --cwd client install --immutable
+      - name: Run ESLint & Prettier
+        run: yarn --cwd client run lint
+
+  testBuildClient:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn --cwd client install --immutable
+      - name: Build
+        run: yarn --cwd client run build
+
+  pushClient:
+    runs-on: ubuntu-latest
+    needs: [lint, testBuild]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn install --immutable
+      - name: Build
+        run: yarn --cwd client run build
+
+      - name: Push to Release
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: release-client
+          FOLDER: ${{ env.path-client }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
+          SKIP_EMPTY_COMMITS: true
+
+  lintServer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn --cwd server install --immutable
+      - name: Run ESLint & Prettier
+        run: yarn --cwd server run lint
+
+  testBuildClient:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn --cwd server install --immutable
+      - name: Build
+        run: yarn --cwd server run build
+
+  pushServer:
+    runs-on: ubuntu-latest
+    needs: [lint, testBuild]
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.node-version }}
+      - name: Install modules
+        run: yarn --cwd server install --immutable
+      - name: Build
+        run: yarn --cwd server run build
+
+      - name: Push to Release
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: release-server
+          FOLDER: ${{ env.path-server }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MESSAGE: "Build: ({sha}) {msg}"
+          SKIP_EMPTY_COMMITS: true

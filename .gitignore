@@ -1,5 +1,5 @@
 */build
 */node_modules
-/KoLmafia
+*/KoLmafia
 client/src/kolmafia/functions.ts
 client/src/kolmafia/types.ts

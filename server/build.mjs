@@ -11,7 +11,7 @@ build({
 	define: {
 		'process.env.NODE_ENV': '"production"',
 	},
-	outdir: '../KoLmafia/relay',
+	outdir: './KoLmafia/relay',
 	entryPoints: {
 		tome_server: './src/index.ts',
 	},

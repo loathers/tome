@@ -12,7 +12,7 @@ build({
 	define: {
 		'process.env.NODE_ENV': '"production"',
 	},
-	outdir: './build',
+	outdir: './KoLmafia',
 	entryPoints: {
 		tome_client: './src/index.ts',
 	},
