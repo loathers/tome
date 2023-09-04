@@ -149,6 +149,9 @@ export function main(): void {
 
 					const processedArgs = Array.isArray(args)
 						? args.map((argument) => {
+								if (argument === null) {
+									return undefined
+								}
 								const identifier =
 									argument.identifierString ?? argument.identifierNumber
 								if (
