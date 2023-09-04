@@ -57,7 +57,8 @@ type CharacterState = Awaited<ReturnType<typeof getCharacterState>>
 export const RefreshContextProvider: React.FC<{
 	charStateOverride?: () => Promise<Record<string, unknown>>
 	children: React.ReactNode
-}> = ({ charStateOverride, children }) => {
+	interval?: number
+}> = ({ charStateOverride, children, interval }) => {
 	const [lastCharacterState, setLastCharacterState] = charStateOverride
 		? useState<Record<string, unknown>>({})
 		: useState<Partial<CharacterState>>({})
@@ -79,7 +80,7 @@ export const RefreshContextProvider: React.FC<{
 			markRemoteCallCacheDirty()
 			setHardRefreshCount((count) => count + 1)
 		}
-	}, 2000)
+	}, interval ?? 2000)
 
 	useEffect(() => {
 		const callback = (event: MessageEvent) => {
