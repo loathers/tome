@@ -1793,7 +1793,7 @@ var MafiaClass = /* @__PURE__ */ function() {
   }, {
     key: "all",
     value: function() {
-      return [];
+      return remoteCall("all", [this.staticType], []);
     }
   }]), MafiaClass2;
 }();
@@ -2585,7 +2585,7 @@ function _getCharacterState() {
   })), _getCharacterState.apply(this, arguments);
 }
 var RefreshContextProvider = (_ref) => {
-  var charStateOverride = _ref.charStateOverride, children = _ref.children, _ref2 = charStateOverride ? (0, import_react.useState)({}) : (0, import_react.useState)({}), _ref3 = _slicedToArray3(_ref2, 2), lastCharacterState = _ref3[0], setLastCharacterState = _ref3[1], _useState = (0, import_react.useState)(0), _useState2 = _slicedToArray3(_useState, 2), softRefreshCount = _useState2[0], setSoftRefreshCount = _useState2[1], _useState3 = (0, import_react.useState)(0), _useState4 = _slicedToArray3(_useState3, 2), hardRefreshCount = _useState4[0], setHardRefreshCount = _useState4[1];
+  var charStateOverride = _ref.charStateOverride, children = _ref.children, interval = _ref.interval, _ref2 = charStateOverride ? (0, import_react.useState)({}) : (0, import_react.useState)({}), _ref3 = _slicedToArray3(_ref2, 2), lastCharacterState = _ref3[0], setLastCharacterState = _ref3[1], _useState = (0, import_react.useState)(0), _useState2 = _slicedToArray3(_useState, 2), softRefreshCount = _useState2[0], setSoftRefreshCount = _useState2[1], _useState3 = (0, import_react.useState)(0), _useState4 = _slicedToArray3(_useState3, 2), hardRefreshCount = _useState4[0], setHardRefreshCount = _useState4[1];
   return useInterval(/* @__PURE__ */ _asyncToGenerator2(/* @__PURE__ */ _regeneratorRuntime2().mark(function _callee() {
     var characterState;
     return _regeneratorRuntime2().wrap(function(_context) {
@@ -2614,7 +2614,7 @@ var RefreshContextProvider = (_ref) => {
             return _context.stop();
         }
     }, _callee);
-  })), 2e3), (0, import_react.useEffect)(() => {
+  })), interval ?? 2e3), (0, import_react.useEffect)(() => {
     var callback = (event) => {
       event.origin === "http://localhost:3000" && event.data === "refresh" && (markRemoteCallCacheDirty(), setSoftRefreshCount((count2) => count2 + 1));
     };
