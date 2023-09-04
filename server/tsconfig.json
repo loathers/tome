@@ -15,7 +15,9 @@
 		"pretty": true,
 		"strict": true,
 		"target": "es2018",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"ignoreDeprecations": "5.0"
 	},
 	"include": ["src/**/*.ts"],
 	"exclude": [
