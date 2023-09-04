@@ -1329,6 +1329,7 @@ var enumeratedTypes = {
   Familiar: import_kolmafia2.Familiar,
   Item: import_kolmafia2.Item,
   Location: import_kolmafia2.Location,
+  Modifier: import_kolmafia2.Modifier,
   Monster: import_kolmafia2.Monster,
   Phylum: import_kolmafia2.Phylum,
   Servant: import_kolmafia2.Servant,
@@ -1346,7 +1347,7 @@ var enumeratedTypes = {
   Monster: import_kolmafia2.Monster,
   Thrall: import_kolmafia2.Thrall,
   Servant: import_kolmafia2.Servant
-}, specialFunctions = ["identity", "eval"];
+}, specialFunctions = ["identity", "eval", "all"];
 function isSpecialFunction(name) {
   return specialFunctions.includes(name);
 }
@@ -1354,7 +1355,7 @@ function transformResult(value) {
   if (Array.isArray(value))
     return value.map(transformResult);
   if (typeof value == "object" && value) {
-    var result = Object.fromEntries(Object.entries(JSON.parse((0, import_kolmafia2.toJson)(value))).map(function(_ref) {
+    var result = Object.fromEntries(Object.entries(JSON.parse(JSON.stringify(value))).map(function(_ref) {
       var _ref2 = _slicedToArray(_ref, 2), key = _ref2[0], value2 = _ref2[1];
       return [key, transformResult(value2)];
     }));
@@ -1403,20 +1404,26 @@ function main() {
         if (!isSpecialFunction(name) && typeof kolmafia[name] != "function")
           return [name, null];
         var processedArgs = Array.isArray(args) ? args.map(function(argument) {
-          var _argument$identifierS, identifier = (_argument$identifierS = argument.identifierString) !== null && _argument$identifierS !== void 0 ? _argument$identifierS : argument.identifierNumber;
-          if (argument.objectType in enumeratedTypes && ["string", "number"].includes(typeof identifier)) {
-            var type = enumeratedTypes[argument.objectType];
-            return type.get(identifier);
-          } else
-            return argument;
+          var _argument$identifierS;
+          if (argument !== null) {
+            var identifier = (_argument$identifierS = argument.identifierString) !== null && _argument$identifierS !== void 0 ? _argument$identifierS : argument.identifierNumber;
+            if (argument.objectType in enumeratedTypes && ["string", "number"].includes(typeof identifier)) {
+              var type2 = enumeratedTypes[argument.objectType];
+              return type2.get(identifier);
+            } else
+              return argument;
+          }
         }) : [], result2;
         if (name === "identity")
           result2 = processedArgs[0];
-        else {
+        else if (name === "all" && processedArgs.length > 0) {
+          var typeName = processedArgs[0], type = enumeratedTypes[typeName];
+          type && (result2 = type.all());
+        } else {
           var f = name === "eval" ? eval : kolmafia[name];
           result2 = f.apply(void 0, _toConsumableArray(processedArgs));
         }
-        return [JSON.stringify([name].concat(_toConsumableArray(Array.isArray(args) ? args : []))), JSON.parse((0, import_kolmafia2.toJson)(transformResult(result2)))];
+        return [JSON.stringify([name].concat(_toConsumableArray(Array.isArray(args) ? args : []))), JSON.parse(JSON.stringify(transformResult(result2)))];
       }))
     });
   }
