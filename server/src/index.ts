@@ -20,7 +20,6 @@ import {
 	Stat,
 	Thrall,
 	toInt,
-	toJson,
 	writeln,
 } from 'kolmafia'
 import { get } from 'libram'
@@ -74,7 +73,7 @@ function transformResult(value: unknown): unknown {
 		return value.map(transformResult)
 	} else if (typeof value === 'object' && value) {
 		const result = Object.fromEntries(
-			Object.entries(JSON.parse(toJson(value))).map(([key, value]) => [
+			Object.entries(JSON.parse(JSON.stringify(value))).map(([key, value]) => [
 				key,
 				transformResult(value),
 			])
@@ -188,7 +187,7 @@ export function main(): void {
 					// Use [name, args] as the key so we can batch one function with different args.
 					return [
 						JSON.stringify([name, ...(Array.isArray(args) ? args : [])]),
-						JSON.parse(toJson(transformResult(result))),
+						JSON.parse(JSON.stringify(transformResult(result))),
 					]
 				})
 			),
