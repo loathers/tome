@@ -70,7 +70,7 @@ abstract class MafiaClass<T extends PlaceholderTypes> {
 	}
 
 	static all<U extends PlaceholderTypes, V extends MafiaClass<U>>(): V[] {
-		return []
+		return remoteCall('all', [this.staticType], []) as V[]
 	}
 }
 

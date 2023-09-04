@@ -60,7 +60,7 @@ const toIntTypes = {
 	Servant,
 } as const
 
-const specialFunctions = ['identity', 'eval'] as const
+const specialFunctions = ['identity', 'eval', 'all'] as const
 type SpecialFunction = (typeof specialFunctions)[number]
 
 function isSpecialFunction(name: string): name is SpecialFunction {
@@ -166,6 +166,12 @@ export function main(): void {
 					let result
 					if (name === 'identity') {
 						result = processedArgs[0]
+					} else if (name === 'all' && processedArgs.length > 0) {
+						const typeName = processedArgs[0]
+						const type = enumeratedTypes[typeName] as typeof MafiaClass
+						if (type) {
+							result = type.all()
+						}
 					} else {
 						const f = (name === 'eval' ? eval : kolmafia[name]) as (
 							...args: unknown[]
